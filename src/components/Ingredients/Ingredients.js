@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 import IngredientForm from "./IngredientForm";
 import Search from "./Search";
@@ -8,15 +9,25 @@ function Ingredients() {
   const [ingredients, setIngredients] = useState([]);
 
   const addIngredientHandler = (ingredient) => {
-    setIngredients((prevState) => {
-      return [
-        ...prevState,
-        {
-          id: Math.random().toString(),
-          ...ingredient
-        }
-      ];
-    });
+    axios
+      .post(
+        "https://react-hooks-1606c-default-rtdb.firebaseio.com/ingredients.json",
+        { body: ingredient }
+      )
+      .then((response) => {
+        setIngredients((prevState) => {
+          return [
+            ...prevState,
+            {
+              id: response.name,
+              ...ingredient
+            }
+          ];
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
   return (
     <div className="App">
