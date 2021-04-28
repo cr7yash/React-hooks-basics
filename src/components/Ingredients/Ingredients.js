@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
 import IngredientForm from "./IngredientForm";
@@ -9,23 +9,11 @@ function Ingredients() {
   const [ingredients, setIngredients] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(
-        "https://react-hooks-1606c-default-rtdb.firebaseio.com/ingredients.json"
-      )
-      .then((res) => {
-        // console.log(res);
-        const loadedIngredients = [];
-        for (const key in res.data) {
-          console.log(res.data[key].body.title);
-          loadedIngredients.push({
-            id: key,
-            title: res.data[key].body.title,
-            amount: res.data[key].body.amount
-          });
-        }
-        setIngredients(loadedIngredients);
-      });
+    console.log("RENDERING INGREDIENTS", ingredients);
+  }, [ingredients]);
+
+  const filterIngredientHandler = useCallback((filterIngredient) => {
+    setIngredients(filterIngredient);
   }, []);
 
   const addIngredientHandler = (ingredient) => {
@@ -54,7 +42,7 @@ function Ingredients() {
       <IngredientForm onAddIngredient={addIngredientHandler} />
 
       <section>
-        <Search />
+        <Search onLoadIngredient={filterIngredientHandler} />
         <IngredientList ingredients={ingredients} onRemoveItem={() => {}} />
       </section>
     </div>
